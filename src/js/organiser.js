@@ -36,7 +36,12 @@ export default class Organiser {
 
   //  this.inputEventListener();
 
-  //  this.ws.send(JSON.stringify({type: 'messageAll'}));  
+  //  this.ws.send(JSON.stringify({type: 'messageAll'})); 
+  let image = document.createElement('img');
+
+image.setAttribute('src', '../../../../ahj74-serverImage/public/5bae1a47-cad2-4423-8c50-ef7bdf127890');
+
+document.body.appendChild(image); 
 
   }
 
@@ -65,6 +70,18 @@ export default class Organiser {
     });
     this.ws.addEventListener('message', (evt) => {
       console.log(evt.data)
+
+
+
+let image = document.createElement('img');
+//image.setAttribute('src', `${evt.data}`);
+//image.setAttribute('src', '../../../../ahj-organaiserserver/americanexpress.png');
+//image.setAttribute('src', `../img/js.png`);
+image.setAttribute('src', `http://localhost:7070/${evt.data}`);
+
+
+document.body.appendChild(image);
+
 
       
    //   let message = JSON.parse(evt.data);
