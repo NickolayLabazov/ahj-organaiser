@@ -1,3 +1,4 @@
+
 import InputBox from './inputBox.js';
 import Message from './message.js';
 import Image from './imageclass.js';
@@ -17,7 +18,7 @@ export default class Organiser {
   create() {  
     console.log('Начать работу');
    
-    this.wsCreate();           
+  this.wsCreate();           
     this.divOrganiser = document.createElement('div');
     this.divMessage = document.createElement('div'); 
     this.search = document.createElement('div');   
@@ -37,9 +38,11 @@ export default class Organiser {
   //  this.inputEventListener();
 
   //  this.ws.send(JSON.stringify({type: 'messageAll'})); 
-  let image = document.createElement('img');
+ let image = document.createElement('img');
 
-image.setAttribute('src', '../../../../ahj74-serverImage/public/5bae1a47-cad2-4423-8c50-ef7bdf127890');
+//image.setAttribute('src', '../../../../ahj74-serverImage/public/5bae1a47-cad2-4423-8c50-ef7bdf127890');
+//image.setAttribute('src', 'http://localhost:7072/2fc8b476-cf78-4098-9486-9631c8421e56');
+image.setAttribute('src', 'http://localhost:7075/08d741d8-7299-464a-a80c-ba31daaf4f73');
 
 document.body.appendChild(image); 
 
@@ -59,7 +62,7 @@ document.body.appendChild(image);
   } */
 
   wsCreate(){
-    this.ws = new WebSocket('ws://localhost:7070/ws');
+    this.ws = new WebSocket('ws://localhost:7075/ws');
     this.ws.binaryType = 'blob'; // arraybuffer
     this.ws.addEventListener('open', () => {
       console.log('connected');     
@@ -77,7 +80,7 @@ let image = document.createElement('img');
 //image.setAttribute('src', `${evt.data}`);
 //image.setAttribute('src', '../../../../ahj-organaiserserver/americanexpress.png');
 //image.setAttribute('src', `../img/js.png`);
-image.setAttribute('src', `http://localhost:7070/${evt.data}`);
+image.setAttribute('src', `http://localhost:7075/${evt.data}`);
 
 
 document.body.appendChild(image);
