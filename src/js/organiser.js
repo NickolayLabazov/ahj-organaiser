@@ -12,13 +12,14 @@ export default class Organiser {
     this.divMessage = null;
     this.inputBox = null;
     this.ws = null;
+  //  this.load = false;
     
   }  
 
   create() {  
     console.log('Начать работу');
    
-  this.wsCreate();           
+    this.wsCreate();           
     this.divOrganiser = document.createElement('div');
     this.divMessage = document.createElement('div'); 
     this.search = document.createElement('div');   
@@ -36,16 +37,7 @@ export default class Organiser {
     this.search.innerHTML = '&#128269';
 
   //  this.inputEventListener();
-
-  //  this.ws.send(JSON.stringify({type: 'messageAll'})); 
- let image = document.createElement('img');
-
-//image.setAttribute('src', '../../../../ahj74-serverImage/public/5bae1a47-cad2-4423-8c50-ef7bdf127890');
-//image.setAttribute('src', 'http://localhost:7072/2fc8b476-cf78-4098-9486-9631c8421e56');
-image.setAttribute('src', 'http://localhost:7075/08d741d8-7299-464a-a80c-ba31daaf4f73');
-
-document.body.appendChild(image); 
-
+  //  this.ws.send(JSON.stringify({type: 'messageAll'}));
   }
 
 /*   inputEventListener(){
@@ -72,58 +64,30 @@ document.body.appendChild(image);
 
     });
     this.ws.addEventListener('message', (evt) => {
-      console.log(evt.data)
+      console.log(evt.data)     
+      let message = JSON.parse(evt.data);   
 
 
 
-let image = document.createElement('img');
-//image.setAttribute('src', `${evt.data}`);
-//image.setAttribute('src', '../../../../ahj-organaiserserver/americanexpress.png');
-//image.setAttribute('src', `../img/js.png`);
-image.setAttribute('src', `http://localhost:7075/${evt.data}`);
 
 
-document.body.appendChild(image);
+
+
 
 
       
    //   let message = JSON.parse(evt.data);
      
-   /*   if(message.type === 'input'){
-       if(message.name){
-         this.chat()
-       } else{
-         this.mess()
-       }
-     } else if(message.type === 'message'){
+      if(message.type === 'message'){
       let mess = new Message(this.divMessage, message);
       mess.create();
       //this.divMes.innerHTML = message.message;
-     }else if(message.type === 'messageAll'){
-      let messages = message.message;
-      for(let mess of messages){
-        let messOld = new Message(this.divMes, this.name, mess);
-      messOld.create();
-      }
-      
-      //this.divMes.innerHTML = message.message;
-     }else if(message.type === 'online?'){
-      this.ws.send(JSON.stringify({'type': 'online', 'name': this.name}));
-     }else if(message.type === 'online'){
-      this.divName.innerHTML = '';
-      for(let name of message.message){
-        let nameOnline = document.createElement('p'); 
-        nameOnline.innerHTML = name;
-        nameOnline.style.marginLeft = '10px';
-        if(name === this.name){
-          nameOnline.innerHTML = 'You';
-          nameOnline.style.color = 'red';
-        }
-        this.divName.appendChild(nameOnline);
-      }
+     } else if(message.type === 'loadEnd'){
+      let mess = new Message(this.divMessage, message);
+      mess.create();
      }
- */
-     this.divMes
+ 
+     //this.divMes
      //let message = evt.data; 
       
    //   console.log(message);

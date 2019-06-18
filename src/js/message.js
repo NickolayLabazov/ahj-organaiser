@@ -30,6 +30,14 @@ export default class Message {
       this.author.style.color = 'red';
       this.author.innerHTML = `${this.mess.time}`;
 
+      if(this.mess.blobType = 'image'){
+        let image = document.createElement('img');
+        image.setAttribute('src', `http://localhost:7075/${this.mess.name}`);
+        this.messageConteiner.appendChild(image);
+        
+      }
+
+      
     
 
 

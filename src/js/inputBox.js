@@ -5,6 +5,7 @@ import Image from './imageclass.js';
 export default class InputBox {
  // class InputBox {
   constructor(parent, ws) {
+    this.size = 10000;
     this.parent = parent;
     this.ws = ws;
     this.posts = [];
@@ -33,9 +34,11 @@ export default class InputBox {
     this.jps = null;
     this.previev = null;
     this.fileForm = null;
-    this.link = null;
-    this.formData = null;
+    this.link = null;   
     this.previevTable = null;
+  //  this.newBlob = null;
+    this.chunk = null;
+    this.remain = null;
   }
 
   create() {
@@ -180,13 +183,13 @@ export default class InputBox {
         if (this.input.value !== '') {
 
           if(this.input.value != ''){
-            this.ws.send(JSON.stringify({type: 'message', name: this.name, message: this.input.value}));
+            this.ws.send(JSON.stringify({type: 'message', message: this.input.value}));
             this.input.value = '';
           }
           const content = document.createElement('p');
           content.innerHTML = `${this.input.value}`;
 
-          console.log(content);
+         
          // const prev = new Prev(this.previev, content, true);
          // prev.create();
           this.input.value = '';
@@ -197,13 +200,9 @@ export default class InputBox {
     this.input.addEventListener('drop', async (event) => {
       event.preventDefault();
       const files = Array.from(event.dataTransfer.files);
-      this.blob = files[0];
-     // this.formData = new FormData();
-     // this.formData.append('file', this.blob);
-     // console.log(this.blob);
+      this.blob = files[0];     
       let previev = new Image(this.previevTable, this.blob.name, URL.createObjectURL(this.blob)); //Дописать URL
-      previev.create();
-     // this.startLoad();
+      previev.create();     
     })
 
     this.link.addEventListener('change', async (evt) => {
@@ -211,56 +210,49 @@ export default class InputBox {
       const files = Array.from(evt.currentTarget.files);     
       this.blob = files[0];
       console.log(this.blob);
-      this.formData = new FormData(evt.currentTarget);
-     // console.log(this.formData);
-      //this.blob = evt.currentTarget; // Не извлекается файл !!!!!!!
+      this.formData = new FormData(evt.currentTarget);     
       let previev = new Image(this.previevTable, this.blob, URL.createObjectURL(this.blob)); //Дописать URL
       previev.create();
-      
-    //  this.startLoad();
+     
     })
 
     this.enter.addEventListener('click', (evt) => {
-      evt.preventDefault();      
-      this.formData = new FormData();
-      this.formData.append('file', this.blob);
-     // console.log(this.blob);
-     this.ws.send(this.blob);
-     
-     /* let readFile = (file) => {
-      return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.addEventListener('load', (evt) => {
-      resolve(evt.target.result);
-      });
-      reader.addEventListener('error', (evt) => {
-      reject(evt.target.error);
-      });
-      reader.readAsArrayBuffer(file);
-      }).then((buf) => {console.log(buf);
-      let blob = new Blob([buf], {type : 'image/png'});
-      console.log(blob)
-      }
-      
-      
-      );
-      }
-      
-                    
-                   
-      readFile(this.blob)  */           
-              
-            
-                  
-              
-            
-       
-            
-          
-      
+      evt.preventDefault();
+      this.ws.send(JSON.stringify({type: 'loadStart', blobType: this.blob.type}));    
     })
 
+    this.ws.addEventListener('message', (evt) => {
+      console.log(evt.data);
+      let msg = JSON.parse(evt.data);
+      if(msg.type === 'loadStart'){
+        if(msg.status === 'ok'){
+          this.ws.send(this.blob);
+          this.remain = this.blob;
+          this.loadBlob();          
+        }
+      } else if(msg.type === 'load'){
+        if(msg.status === 'ok'){
+          if(this.remain = null){
+            this.ws.send(JSON.stringify({type: 'loadEnd'}));
+          } else{
+            this.loadBlob();
+          }
+        }
+      }
+    }) 
+  }
 
+  loadBlob(){
+    console.log(this.blob)
+    //this.ws.send(this.blob);
+   /*   if(this.remain.size <= this.size){
+      this.chunk = this.remain      
+      this.remain = null;
+    } else {
+      this.chunk = this.remain.slice(0, this.size);
+      this.remain = this.remain.slice(this.size + 1);
+    }
+    this.ws.send(this.chunk);*/
   }
 
   timer() {
