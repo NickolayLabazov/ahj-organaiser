@@ -5,7 +5,7 @@ import Image from './imageclass.js';
 export default class InputBox {
  // class InputBox {
   constructor(parent, ws) {
-    this.size = 10000;
+    this.size = 1000;
     this.parent = parent;
     this.ws = ws;
     this.posts = [];
@@ -218,6 +218,7 @@ export default class InputBox {
 
     this.enter.addEventListener('click', (evt) => {
       evt.preventDefault();
+    //  this.ws.send(this.blob);
       this.ws.send(JSON.stringify({type: 'loadStart', blobType: this.blob.type}));    
     })
 
@@ -226,13 +227,13 @@ export default class InputBox {
       let msg = JSON.parse(evt.data);
       if(msg.type === 'loadStart'){
         if(msg.status === 'ok'){
-          this.ws.send(this.blob);
+         // this.ws.send(this.blob);
           this.remain = this.blob;
           this.loadBlob();          
         }
       } else if(msg.type === 'load'){
         if(msg.status === 'ok'){
-          if(this.remain = null){
+          if(this.remain === null){
             this.ws.send(JSON.stringify({type: 'loadEnd'}));
           } else{
             this.loadBlob();
@@ -243,16 +244,16 @@ export default class InputBox {
   }
 
   loadBlob(){
-    console.log(this.blob)
-    //this.ws.send(this.blob);
-   /*   if(this.remain.size <= this.size){
+   // console.log(this.blob)
+  // this.ws.send(this.remain);
+      if(this.remain.size <= this.size){
       this.chunk = this.remain      
       this.remain = null;
     } else {
       this.chunk = this.remain.slice(0, this.size);
-      this.remain = this.remain.slice(this.size + 1);
+      this.remain = this.remain.slice(this.size);
     }
-    this.ws.send(this.chunk);*/
+    this.ws.send(this.chunk);
   }
 
   timer() {

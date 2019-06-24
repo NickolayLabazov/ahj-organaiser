@@ -54,7 +54,7 @@ export default class Organiser {
   } */
 
   wsCreate(){
-    this.ws = new WebSocket('ws://localhost:7075/ws');
+    this.ws = new WebSocket('ws://localhost:7071/ws');
     this.ws.binaryType = 'blob'; // arraybuffer
     this.ws.addEventListener('open', () => {
       console.log('connected');     
