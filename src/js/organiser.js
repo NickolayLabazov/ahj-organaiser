@@ -63,35 +63,23 @@ export default class Organiser {
     // this.ws.send('hello');
 
     });
+
+/* 
     this.ws.addEventListener('message', (evt) => {
       console.log(evt.data)     
-      let message = JSON.parse(evt.data);   
-
-
-
-
-
-
-
-
-
-      
-   //   let message = JSON.parse(evt.data);
-     
+      let message = JSON.parse(evt.data);  
+        
       if(message.type === 'message'){
       let mess = new Message(this.divMessage, message);
       mess.create();
-      //this.divMes.innerHTML = message.message;
+      
      } else if(message.type === 'loadEnd'){
       let mess = new Message(this.divMessage, message);
       mess.create();
-     }
- 
-     //this.divMes
-     //let message = evt.data; 
-      
-   //   console.log(message);
+     }     
     });
+
+ */    
     this.ws.addEventListener('close', (evt) => {
       console.log('connection closed', evt);
       

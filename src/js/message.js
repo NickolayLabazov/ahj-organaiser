@@ -24,20 +24,27 @@ export default class Message {
     this.messageConteiner.appendChild(this.text);
 
    // this.author.innerHTML = `${this.mess.name}, ${this.mess.time}`;
-    this.text.innerHTML = this.mess.message;
+    this.text.innerHTML = this.mess.text;
 
     this.messageConteiner.classList.add('right')
       this.author.style.color = 'red';
       this.author.innerHTML = `${this.mess.time}`;
 
-      if(this.mess.blobType = 'image'){
+
+      for(let link of this.mess.load){
+        let image = document.createElement('img');
+        image.setAttribute('src', `http://localhost:7071/${link.name}`);
+        this.messageConteiner.appendChild(image);
+      }
+
+    /*   if(this.mess.blobType = 'image'){
         console.log(this.mess.name)
         let image = document.createElement('img');
-        image.setAttribute('src', `http://localhost:7071/${this.mess.name}`);
+        image.setAttribute('src', `http://localhost:7071/${this.mess.load[0].name}`);
         this.messageConteiner.appendChild(image);
         
       }
-
+ */
       
     
 

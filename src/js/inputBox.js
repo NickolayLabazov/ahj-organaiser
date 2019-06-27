@@ -1,6 +1,7 @@
 import Media from './media.js';
 import Prev from './prev.js';
 import Image from './imageclass.js';
+import Message from './message.js';
 
 export default class InputBox {
  // class InputBox {
@@ -20,6 +21,10 @@ export default class InputBox {
     this.camera = null;
     this.video = false;
     this.blob = null;
+    this.blobs = [];
+    this.loadCounter = 0;
+
+
     this.stopCanc = null;
     this.cancel = null;
     this.stop = null;
@@ -179,21 +184,9 @@ export default class InputBox {
 
     this.input.addEventListener('keydown', (event) => {
       if (event.keyCode === 13) {
-        event.preventDefault();
-        if (this.input.value !== '') {
-
-          if(this.input.value != ''){
-            this.ws.send(JSON.stringify({type: 'message', message: this.input.value}));
-            this.input.value = '';
-          }
-          const content = document.createElement('p');
-          content.innerHTML = `${this.input.value}`;
-
-         
-         // const prev = new Prev(this.previev, content, true);
-         // prev.create();
-          this.input.value = '';
-        }
+        event.preventDefault();      
+            this.ws.send(JSON.stringify({type: 'messageStart', text: this.input.value}));
+            this.input.value = '';       
       }
     })
 
@@ -202,7 +195,8 @@ export default class InputBox {
       const files = Array.from(event.dataTransfer.files);
       this.blob = files[0];     
       let previev = new Image(this.previevTable, this.blob.name, URL.createObjectURL(this.blob)); //Дописать URL
-      previev.create();     
+      previev.create();
+      this.blobs.push(this.blob);     
     })
 
     this.link.addEventListener('change', async (evt) => {
@@ -213,22 +207,52 @@ export default class InputBox {
       this.formData = new FormData(evt.currentTarget);     
       let previev = new Image(this.previevTable, this.blob, URL.createObjectURL(this.blob)); //Дописать URL
       previev.create();
-     
+      this.blobs.push(this.blob);  
     })
 
     this.enter.addEventListener('click', (evt) => {
       evt.preventDefault();
     //  this.ws.send(this.blob);
-      this.ws.send(JSON.stringify({type: 'loadStart', blobType: this.blob.type}));    
+    this.ws.send(JSON.stringify({type: 'loadStart', blobType: this.blobs[this.loadCounter].type}));    
     })
 
     this.ws.addEventListener('message', (evt) => {
-      console.log(evt.data);
+     // console.log(evt.data);
       let msg = JSON.parse(evt.data);
-      if(msg.type === 'loadStart'){
+      console.log(msg);
+
+      if(msg.type === 'messageStart'){
+        if(msg.status === 'ok'){
+          if(this.blobs.length > 0){
+            this.ws.send(JSON.stringify({type: 'loadStart', blobType: this.blobs[this.loadCounter].type})); 
+          } else{
+            this.ws.send(JSON.stringify({type: 'messageEnd'}));
+          }
+          
+        }
+       // let mess = new Message(this.divMessage, msg);
+      //  mess.create();
+        
+       } else if(msg.type === 'messageEnd'){
+        console.log(msg.content);
+        let newMessage = new Message(document.body.querySelector('.divMessage') , msg.content);
+        newMessage.create();
+         }   else if(msg.type === 'loadEnd'){
+      //  let mess = new Message(this.divMessage, msg);
+      //  mess.create();
+      this.loadCounter += 1;
+      if(this.loadCounter < this.blobs.length ){
+        this.ws.send(JSON.stringify({type: 'loadStart', blobType: this.blobs[this.loadCounter].type}));
+      } else{
+        this.ws.send(JSON.stringify({type: 'messageEnd'}));
+      }
+
+       }  
+
+     else if(msg.type === 'loadStart'){
         if(msg.status === 'ok'){
          // this.ws.send(this.blob);
-          this.remain = this.blob;
+          this.remain = this.blobs[this.loadCounter];
           this.loadBlob();          
         }
       } else if(msg.type === 'load'){
@@ -319,6 +343,7 @@ export default class InputBox {
         this.blob = new Blob(this.chunks);
         const media = new Media(this.video, document.body, this.blob);
         const prev = new Prev(this.previev, media.create(), this.stop);
+        this.blobs.push(this.blob);
         prev.create();
 
         if(this.video){
