@@ -193,9 +193,11 @@ export default class InputBox {
     this.input.addEventListener('drop', async (event) => {
       event.preventDefault();
       const files = Array.from(event.dataTransfer.files);
-      this.blob = files[0];     
-      let previev = new Image(this.previevTable, this.blob.name, URL.createObjectURL(this.blob)); //Дописать URL
-      previev.create();
+      this.blob = files[0]; 
+      console.log(this.blob);    
+     // let previev = new Image(this.previevTable, this.blob.name, URL.createObjectURL(this.blob)); //Дописать URL
+     let previev = new Image(this.previevTable, this.blob, URL.createObjectURL(this.blob));
+     previev.create();
       this.blobs.push(this.blob);     
     })
 
@@ -204,7 +206,7 @@ export default class InputBox {
       const files = Array.from(evt.currentTarget.files);     
       this.blob = files[0];
       console.log(this.blob);
-      this.formData = new FormData(evt.currentTarget);     
+     // this.formData = new FormData(evt.currentTarget);     
       let previev = new Image(this.previevTable, this.blob, URL.createObjectURL(this.blob)); //Дописать URL
       previev.create();
       this.blobs.push(this.blob);  
@@ -224,7 +226,8 @@ export default class InputBox {
       if(msg.type === 'messageStart'){
         if(msg.status === 'ok'){
           if(this.blobs.length > 0){
-            this.ws.send(JSON.stringify({type: 'loadStart', blobType: this.blobs[this.loadCounter].type})); 
+            console.log(this.blobs)
+            this.ws.send(JSON.stringify({type: 'loadStart', blobType: this.blobs[this.loadCounter].type, blobName: this.blobs[this.loadCounter].name})); 
           } else{
             this.ws.send(JSON.stringify({type: 'messageEnd'}));
           }
@@ -237,6 +240,8 @@ export default class InputBox {
         console.log(msg.content);
         let newMessage = new Message(document.body.querySelector('.divMessage') , msg.content);
         newMessage.create();
+        this.blobs = [];
+        this.loadCounter = 0;
          }   else if(msg.type === 'loadEnd'){
       //  let mess = new Message(this.divMessage, msg);
       //  mess.create();
